@@ -1,0 +1,50 @@
+{
+  "flying_mosquito_sound": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "mosquitoes:flying_mosquito_sound0",
+        "stream": false
+      },
+      {
+        "name": "mosquitoes:flying_mosquito_sound1",
+        "stream": false
+      },
+      {
+        "name": "mosquitoes:flying_mosquito_sound2",
+        "stream": false
+      },
+      {
+        "name": "mosquitoes:flying_mosquito_sound3",
+        "stream": false
+      }
+    ]
+  },
+  "gulp_sound": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "mosquitoes:gulp_sound",
+        "stream": false
+      }
+    ]
+  },
+  "smack_sound": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "mosquitoes:smack_sound",
+        "stream": false
+      }
+    ]
+  },
+  "splash_sound": {
+    "category": "hostile",
+    "sounds": [
+      {
+        "name": "mosquitoes:splash_sound",
+        "stream": false
+      }
+    ]
+  }
+}

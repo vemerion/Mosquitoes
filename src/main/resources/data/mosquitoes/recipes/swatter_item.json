@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ccc",
+    "ccc",
+    " s "
+  ],
+  "key":
+  {
+    "s":
+    {
+      "item": "minecraft:stick"
+    },
+    "c":
+    {
+      "item": "minecraft:cobweb"
+    }
+  },
+  "result":
+  {
+    "item": "mosquitoes:swatter_item"
+  }
+}
