@@ -23,7 +23,7 @@ public class WavingMessage {
 		context.setPacketHandled(true);
 		context.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			PlayerEntity player = context.getSender();
-			Mosquitoes.getMosquitoes(player).killMosquitoServer(player);
+			Mosquitoes.getMosquitoes(player).chaseAwayRandomMosquito(player);
 		}));
 	}
 }

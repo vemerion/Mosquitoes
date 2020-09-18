@@ -3,7 +3,8 @@ package mod.vemerion.mosquitoes;
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.capacity.MosquitoesStorage;
 import mod.vemerion.mosquitoes.item.SwatterItem;
-import mod.vemerion.mosquitoes.network.MosquitoesMessage;
+import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
+import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.Network;
 import mod.vemerion.mosquitoes.network.WavingMessage;
 import net.minecraft.item.Item;
@@ -30,10 +31,12 @@ public class ModEventSubscriber {
 	public static void setup(FMLCommonSetupEvent event) {
 		CapabilityManager.INSTANCE.register(Mosquitoes.class, new MosquitoesStorage(), Mosquitoes::new);
 
-		Network.INSTANCE.registerMessage(0, MosquitoesMessage.class, MosquitoesMessage::encode,
-				MosquitoesMessage::decode, MosquitoesMessage::handle);
+		Network.INSTANCE.registerMessage(0, SpawnMosquitoesMessage.class, SpawnMosquitoesMessage::encode,
+				SpawnMosquitoesMessage::decode, SpawnMosquitoesMessage::handle);
 		Network.INSTANCE.registerMessage(1, WavingMessage.class, WavingMessage::encode,
 				WavingMessage::decode, WavingMessage::handle);
+		Network.INSTANCE.registerMessage(2, AttackMosquitoMessage.class, AttackMosquitoMessage::encode,
+				AttackMosquitoMessage::decode, AttackMosquitoMessage::handle);
 	}
 
 	@SubscribeEvent

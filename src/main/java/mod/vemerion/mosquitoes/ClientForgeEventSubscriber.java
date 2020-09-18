@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mod.vemerion.mosquitoes.capacity.Mosquito;
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.model.MosquitoModel;
-import mod.vemerion.mosquitoes.network.MosquitoesMessage;
+import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.Network;
 import mod.vemerion.mosquitoes.network.WavingMessage;
 import net.minecraft.client.Minecraft;
@@ -115,8 +115,9 @@ public class ClientForgeEventSubscriber {
 
 	@SubscribeEvent
 	public static void chaseAwayMosquitoes(LeftClickEmpty event) {
-		if (hasMosquitoes(event.getPlayer()))
-			Network.INSTANCE.send(PacketDistributor.SERVER.noArg(), new WavingMessage());
+		if (hasMosquitoes(event.getPlayer())) {
+			Mosquitoes.getMosquitoes(event.getPlayer()).waveHands();
+		}
 	}
 	
 	private static boolean hasMosquitoes(PlayerEntity player) {

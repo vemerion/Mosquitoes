@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Random;
 
 import mod.vemerion.mosquitoes.Main;
-import mod.vemerion.mosquitoes.network.MosquitoesMessage;
+import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
+import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.Network;
+import mod.vemerion.mosquitoes.network.WavingMessage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -17,6 +19,8 @@ public class Mosquitoes {
 	private Random rand;
 	private int timer;
 	private int waves;
+	private int idCounter;
+	private int waveHandsCooldown;
 
 	public Mosquitoes() {
 		rand = new Random();
@@ -35,6 +39,7 @@ public class Mosquitoes {
 			if (m.isFlying())
 				someoneFlying = true;
 		}
+		waveHandsCooldown--;
 
 		if (!player.world.isRemote) {
 
@@ -50,11 +55,11 @@ public class Mosquitoes {
 
 					waves--;
 				}
-				int count = rand.nextInt(2) + 1;
+				int count = rand.nextInt(4) + 3;
 
 				mosquitoArrives(count);
 				Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-						new MosquitoesMessage(count));
+						new SpawnMosquitoesMessage(count));
 
 			}
 		} else {
@@ -73,31 +78,68 @@ public class Mosquitoes {
 		}
 	}
 
-	public boolean killMosquitoServer(PlayerEntity player) {
+	// The server picks a random mosquito to kill
+	public boolean killRandomMosquito(PlayerEntity player) {
 		Mosquito removed = null;
 		if (!mosquitoes.isEmpty()) {
-			removed = mosquitoes.remove(0);
+			removed = mosquitoes.remove(rand.nextInt(count()));
 		}
 
 		if (removed == null)
 			return false;
 
 		Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-				new MosquitoesMessage(-1));
+				new AttackMosquitoMessage(removed.getId(), true));
 		return true;
 	}
-	
-	public boolean killMosquitoClient() {
-		Mosquito removed = null;
-		if (!mosquitoes.isEmpty()) {
-			removed = mosquitoes.remove(0);
+
+	// The server picks a random mosquito to chase away, if conditions are met
+	public boolean chaseAwayRandomMosquito(PlayerEntity player) {
+		if (waveHandsCooldown < 0) {
+			waveHandsCooldown = 20;
+			if (!mosquitoes.isEmpty() && rand.nextDouble() < 0.5) {
+				Mosquito chasedAway = mosquitoes.get(rand.nextInt(count()));
+				Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+						new AttackMosquitoMessage(chasedAway.getId(), false));
+				return true;
+			}
 		}
-		return removed != null;
+		return false;
+	}
+
+	// Client method for removing a mosquito
+	public boolean killMosquitoClient(int id) {
+		for (int i = 0; i < count(); i++) {
+			if (get(i).getId() == id) {
+				mosquitoes.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Client method for chasing away a mosquito
+	public boolean chaseAwayMosquitoClient(int id) {
+		for (int i = 0; i < count(); i++) {
+			if (get(i).getId() == id) {
+				get(i).chaseAway();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// The client sends a wave hands message to the server
+	public void waveHands() {
+		if (waveHandsCooldown < 0) {
+			waveHandsCooldown = 20;
+			Network.INSTANCE.send(PacketDistributor.SERVER.noArg(), new WavingMessage());
+		}
 	}
 
 	public void mosquitoArrives(int count) {
 		for (int i = 0; i < count; i++) {
-			mosquitoes.add(new Mosquito(rand));
+			mosquitoes.add(new Mosquito(rand, idCounter++));
 		}
 	}
 
@@ -108,7 +150,7 @@ public class Mosquitoes {
 	public Mosquito get(int i) {
 		return mosquitoes.get(i);
 	}
-	
+
 	public static Mosquitoes getMosquitoes(PlayerEntity player) {
 		return player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
 	}

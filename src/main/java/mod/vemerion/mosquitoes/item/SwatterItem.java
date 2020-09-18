@@ -36,7 +36,7 @@ public class SwatterItem extends Item {
 		if (!worldIn.isRemote && livingEntityIn instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) livingEntityIn;
 			Mosquitoes mosquitoes = player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
-			if (player.getRNG().nextDouble() < 0.2 && mosquitoes.killMosquitoServer(player)) {
+			if (player.getRNG().nextDouble() < 0.15 && mosquitoes.killRandomMosquito(player)) {
 				stack.damageItem(1, player, (p) -> {
 					p.sendBreakAnimation(EquipmentSlotType.MAINHAND);
 				});

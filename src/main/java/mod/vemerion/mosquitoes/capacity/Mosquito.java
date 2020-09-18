@@ -10,8 +10,9 @@ public class Mosquito {
 	private float x, y, prevX, prevY, targetX, targetY, rotation, legRotation, prevLegRotation;
 	private int ticksExisted;
 	private Random rand;
+	private int id;
 
-	public Mosquito(Random rand) {
+	public Mosquito(Random rand, int id) {
 		this.rand = rand;
 		targetX = randomXPos();
 		targetY = randomYPos();
@@ -86,6 +87,15 @@ public class Mosquito {
 	public int ticksExisted() {
 		return ticksExisted;
 	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void chaseAway() {
+		if (ticksExisted < startsLeavingAfter())
+			ticksExisted = startsLeavingAfter();
+	}
 
 	public float getX(float partialTicks) {
 		return MathHelper.lerp(partialTicks, prevX, x);
@@ -107,7 +117,7 @@ public class Mosquito {
 	}
 
 	public float getScale(float partialTicks) {
-		return 0.1f;
+		return 0.05f;
 	}
 
 	public float getRotationX() {
