@@ -2,8 +2,8 @@ package mod.vemerion.mosquitoes;
 
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.capacity.MosquitoesProvider;
-import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.Network;
+import mod.vemerion.mosquitoes.network.SynchMosquitoesMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -28,9 +29,18 @@ public class ForgeEventSubscriber {
 	@SubscribeEvent
 	public static void synchMosquitoesWithClient(PlayerLoggedInEvent event) {
 		PlayerEntity player = event.getPlayer();
-		Mosquitoes mosquitoes = player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
+		Mosquitoes mosquitoes = Mosquitoes.getMosquitoes(player);
 		Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-				new SpawnMosquitoesMessage(mosquitoes.count()));
+				new SynchMosquitoesMessage(mosquitoes.save()));
+	}
+	
+	@SubscribeEvent
+	public static void synchMosquitoesWithClient(PlayerChangedDimensionEvent event) {
+		PlayerEntity player = event.getPlayer();
+		Mosquitoes mosquitoes = Mosquitoes.getMosquitoes(player);
+		Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+				new SynchMosquitoesMessage(mosquitoes.save()));
+
 	}
 
 	@SubscribeEvent

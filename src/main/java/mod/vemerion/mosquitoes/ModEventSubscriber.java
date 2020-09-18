@@ -5,8 +5,9 @@ import mod.vemerion.mosquitoes.capacity.MosquitoesStorage;
 import mod.vemerion.mosquitoes.item.MosquitoWingItem;
 import mod.vemerion.mosquitoes.item.SwatterItem;
 import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
-import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.Network;
+import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
+import mod.vemerion.mosquitoes.network.SynchMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.WavingMessage;
 import net.minecraft.item.Item;
 import net.minecraft.particles.BasicParticleType;
@@ -39,6 +40,8 @@ public class ModEventSubscriber {
 				WavingMessage::decode, WavingMessage::handle);
 		Network.INSTANCE.registerMessage(2, AttackMosquitoMessage.class, AttackMosquitoMessage::encode,
 				AttackMosquitoMessage::decode, AttackMosquitoMessage::handle);
+		Network.INSTANCE.registerMessage(3, SynchMosquitoesMessage.class, SynchMosquitoesMessage::encode,
+				SynchMosquitoesMessage::decode, SynchMosquitoesMessage::handle);
 	}
 
 	@SubscribeEvent

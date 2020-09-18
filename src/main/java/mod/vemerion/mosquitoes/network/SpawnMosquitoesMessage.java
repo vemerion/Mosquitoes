@@ -31,7 +31,6 @@ public class SpawnMosquitoesMessage {
 		return new SpawnMosquitoesMessage(buffer.readInt());
 	}
 
-	// This turned into kind of a mess because of DistExecutor silliness
 	public static void handle(final SpawnMosquitoesMessage msg, final Supplier<NetworkEvent.Context> supplier) {
 		final NetworkEvent.Context context = supplier.get();
 		context.setPacketHandled(true);

@@ -13,6 +13,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -25,10 +26,16 @@ public class Mosquitoes {
 	private int waveHandsCooldown;
 
 	public Mosquitoes() {
+		this.init();
+	}
+	
+	private void init() {
 		rand = new Random();
-		this.mosquitoes = new ArrayList<>();
+		mosquitoes = new ArrayList<>();
 		timer = 20 * 10;
 		waves = rand.nextInt(2) + 2;
+		idCounter = 0;
+		waveHandsCooldown = 0;
 	}
 
 	public void tick(PlayerEntity player) {
@@ -156,6 +163,30 @@ public class Mosquitoes {
 
 	public Mosquito get(int i) {
 		return mosquitoes.get(i);
+	}
+	
+	public void load(CompoundNBT compound) {
+		init();
+		idCounter = compound.getInt("idCounter");
+		int[] ticksExisted = compound.getIntArray("ticksExisted");
+		int[] ids = compound.getIntArray("ids");
+		for (int i = 0; i < ids.length; i++) {
+			mosquitoes.add(new Mosquito(rand, ids[i], ticksExisted[i]));
+		}
+	}
+	
+	public CompoundNBT save() {
+		CompoundNBT compound = new CompoundNBT();
+		int[] ticksExisted = new int[count()];
+		int[] ids = new int[count()];
+		for (int i = 0; i < ticksExisted.length; i++) {
+			ticksExisted[i] = get(i).ticksExisted();
+			ids[i] = get(i).getId();
+		}
+		compound.putIntArray("ticksExisted", ticksExisted);
+		compound.putIntArray("ids", ids);
+		compound.putInt("idCounter", idCounter);
+		return compound;
 	}
 
 	public static Mosquitoes getMosquitoes(PlayerEntity player) {

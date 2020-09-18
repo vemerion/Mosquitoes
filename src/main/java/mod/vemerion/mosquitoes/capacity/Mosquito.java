@@ -12,15 +12,25 @@ public class Mosquito {
 	private Random rand;
 	private int id;
 
-	public Mosquito(Random rand, int id) {
+	public Mosquito(Random rand, int id, int ticksExisted) {
 		this.rand = rand;
+		this.ticksExisted = ticksExisted;
 		targetX = randomXPos();
 		targetY = randomYPos();
 		rotation = rand.nextFloat() * 360;
-		x = randomXPosOutside();
-		y = randomYPosOutside();
+		if (ticksExisted < arrivingDuration() * 0.8f) {
+			x = randomXPosOutside();
+			y = randomYPosOutside();
+		} else {
+			x = targetX;
+			y = targetY;
+		}
 		prevX = x;
 		prevY = y;
+	}
+
+	public Mosquito(Random rand, int id) {
+		this(rand, id, 0);
 	}
 
 	public void tick(PlayerEntity player) {
@@ -69,11 +79,11 @@ public class Mosquito {
 	}
 
 	private float randomYPos() {
-		return rand.nextFloat() * 0.35f - 0.175f;
+		return rand.nextFloat() * 0.30f - 0.15f;
 	}
 
 	private float randomXPos() {
-		return rand.nextFloat() * 0.6f - 0.3f;
+		return rand.nextFloat() * 0.5f - 0.25f;
 	}
 
 	private float randomXPosOutside() {
@@ -87,11 +97,11 @@ public class Mosquito {
 	public int ticksExisted() {
 		return ticksExisted;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public void chaseAway() {
 		if (ticksExisted < startsLeavingAfter())
 			ticksExisted = startsLeavingAfter();
@@ -139,7 +149,7 @@ public class Mosquito {
 	public int arrivingDuration() {
 		return 120;
 	}
-	
+
 	public int leavingDuration() {
 		return 30;
 	}
