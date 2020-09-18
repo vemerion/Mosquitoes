@@ -6,11 +6,13 @@ import java.util.Random;
 
 import mod.vemerion.mosquitoes.Main;
 import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
-import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.Network;
+import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.WavingMessage;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -87,6 +89,11 @@ public class Mosquitoes {
 
 		if (removed == null)
 			return false;
+		
+		if (rand.nextDouble() < 0.1) {
+			ItemEntity wing = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), new ItemStack(Main.MOSQUITO_WING_ITEM));
+			player.world.addEntity(wing);
+		}
 
 		Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
 				new AttackMosquitoMessage(removed.getId(), true));

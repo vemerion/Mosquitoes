@@ -18,6 +18,10 @@ public class Main {
 
 	@ObjectHolder(Main.MODID + ":swatter_item")
 	public static final Item SWATTER_ITEM = null;
+	
+	@ObjectHolder(Main.MODID + ":mosquito_wing_item")
+	public static final Item MOSQUITO_WING_ITEM = null;
+
 
 	@ObjectHolder(Main.MODID + ":flying_mosquito_sound")
 	public static final SoundEvent FLYING_MOSQUITO_SOUND = null;

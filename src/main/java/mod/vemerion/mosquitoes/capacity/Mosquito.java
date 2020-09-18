@@ -117,7 +117,7 @@ public class Mosquito {
 	}
 
 	public float getScale(float partialTicks) {
-		return 0.05f;
+		return 0.04f;
 	}
 
 	public float getRotationX() {

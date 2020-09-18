@@ -2,6 +2,7 @@ package mod.vemerion.mosquitoes;
 
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.capacity.MosquitoesStorage;
+import mod.vemerion.mosquitoes.item.MosquitoWingItem;
 import mod.vemerion.mosquitoes.item.SwatterItem;
 import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
 import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
@@ -25,6 +26,7 @@ public class ModEventSubscriber {
 	@SubscribeEvent
 	public static void onRegisterItem(RegistryEvent.Register<Item> event) {
 		event.getRegistry().register(setup(new SwatterItem(), "swatter_item"));
+		event.getRegistry().register(setup(new MosquitoWingItem(), "mosquito_wing_item"));
 	}
 
 	@SubscribeEvent
