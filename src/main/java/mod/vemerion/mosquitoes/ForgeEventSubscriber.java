@@ -1,8 +1,9 @@
 package mod.vemerion.mosquitoes;
 
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
-import mod.vemerion.mosquitoes.capacity.MosquitoesMessage;
 import mod.vemerion.mosquitoes.capacity.MosquitoesProvider;
+import mod.vemerion.mosquitoes.network.MosquitoesMessage;
+import mod.vemerion.mosquitoes.network.Network;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -28,7 +29,7 @@ public class ForgeEventSubscriber {
 	public static void synchMosquitoesWithClient(PlayerLoggedInEvent event) {
 		PlayerEntity player = event.getPlayer();
 		Mosquitoes mosquitoes = player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
-		MosquitoesMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+		Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
 				new MosquitoesMessage(mosquitoes.count()));
 	}
 

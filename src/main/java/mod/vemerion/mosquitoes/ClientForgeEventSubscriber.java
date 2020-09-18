@@ -6,6 +6,9 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mod.vemerion.mosquitoes.capacity.Mosquito;
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.model.MosquitoModel;
+import mod.vemerion.mosquitoes.network.MosquitoesMessage;
+import mod.vemerion.mosquitoes.network.Network;
+import mod.vemerion.mosquitoes.network.WavingMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -16,6 +19,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
@@ -23,8 +27,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 @SuppressWarnings("deprecation")
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -74,14 +80,14 @@ public class ClientForgeEventSubscriber {
 	public static void renderWaving(RenderHandEvent event) {
 		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
 		float swingProgress = event.getSwingProgress();
-		if (player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && swingProgress > 0) {
+		if (player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && swingProgress > 0 && hasMosquitoes(player)) {
 			event.setCanceled(true);
 			renderWavingHands(player, event.getMatrixStack(), event.getBuffers(), event.getLight(), swingProgress);
 		}
 	}
 
-	private static void renderWavingHands(AbstractClientPlayerEntity player, MatrixStack matrix, IRenderTypeBuffer buffer,
-			int light, float swing) {
+	private static void renderWavingHands(AbstractClientPlayerEntity player, MatrixStack matrix,
+			IRenderTypeBuffer buffer, int light, float swing) {
 		PlayerModel<AbstractClientPlayerEntity> playermodel = new PlayerModel<>(0, false);
 		playermodel.setRotationAngles(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
 		renderWavingHand(player, matrix, buffer, light, swing, HandSide.RIGHT, playermodel.bipedRightArm,
@@ -105,6 +111,16 @@ public class ClientForgeEventSubscriber {
 		armwear.render(matrix, buffer.getBuffer(RenderType.getEntityTranslucent(player.getLocationSkin())), light,
 				OverlayTexture.NO_OVERLAY);
 		matrix.pop();
+	}
+
+	@SubscribeEvent
+	public static void chaseAwayMosquitoes(LeftClickEmpty event) {
+		if (hasMosquitoes(event.getPlayer()))
+			Network.INSTANCE.send(PacketDistributor.SERVER.noArg(), new WavingMessage());
+	}
+	
+	private static boolean hasMosquitoes(PlayerEntity player) {
+		return Mosquitoes.getMosquitoes(player).count() > 0;
 	}
 
 }

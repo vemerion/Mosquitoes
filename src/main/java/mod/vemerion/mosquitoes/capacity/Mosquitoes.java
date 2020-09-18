@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import mod.vemerion.mosquitoes.Main;
+import mod.vemerion.mosquitoes.network.MosquitoesMessage;
+import mod.vemerion.mosquitoes.network.Network;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -19,7 +21,7 @@ public class Mosquitoes {
 	public Mosquitoes() {
 		rand = new Random();
 		this.mosquitoes = new ArrayList<>();
-		timer = 20 * 60 * 5 + rand.nextInt(20 * 60);
+		timer = 20 * 10;
 		waves = rand.nextInt(2) + 2;
 	}
 
@@ -51,7 +53,7 @@ public class Mosquitoes {
 				int count = rand.nextInt(2) + 1;
 
 				mosquitoArrives(count);
-				MosquitoesMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+				Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
 						new MosquitoesMessage(count));
 
 			}
@@ -80,7 +82,7 @@ public class Mosquitoes {
 		if (removed == null)
 			return false;
 
-		MosquitoesMessage.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+		Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
 				new MosquitoesMessage(-1));
 		return true;
 	}
@@ -105,6 +107,9 @@ public class Mosquitoes {
 
 	public Mosquito get(int i) {
 		return mosquitoes.get(i);
-
+	}
+	
+	public static Mosquitoes getMosquitoes(PlayerEntity player) {
+		return player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
 	}
 }

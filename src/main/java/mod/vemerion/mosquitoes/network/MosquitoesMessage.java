@@ -1,9 +1,10 @@
-package mod.vemerion.mosquitoes.capacity;
+package mod.vemerion.mosquitoes.network;
 
 import java.util.Random;
 import java.util.function.Supplier;
 
 import mod.vemerion.mosquitoes.Main;
+import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -16,11 +17,6 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class MosquitoesMessage {
-	private static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(Main.MODID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals);
-
 	private int count;
 
 	public MosquitoesMessage(int count) {
