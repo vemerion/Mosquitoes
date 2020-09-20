@@ -1,4 +1,9 @@
 {
   "item.mosquitoes.swatter_item": "Swatter",
-  "item.mosquitoes.mosquito_wing_item": "Mosquito Wing"
+  "item.mosquitoes.mosquito_wing_item": "Mosquito Wing",
+  "effect.mosquitoes.malaria_effect": "Malaria",
+  "effect.mosquitoes.malaria_cure_effect": "Malaria Cure",
+  "item.minecraft.potion.effect.malaria_cure_potion": "Malaria Cure Potion",
+  "item.minecraft.splash_potion.effect.malaria_cure_potion": "Malaria Cure Splash Potion",
+  "item.minecraft.lingering_potion.effect.malaria_cure_potion": "Malaria Cure Lingering Potion"
 }
