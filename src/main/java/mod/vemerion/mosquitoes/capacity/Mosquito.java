@@ -2,7 +2,9 @@ package mod.vemerion.mosquitoes.capacity;
 
 import java.util.Random;
 
+import mod.vemerion.mosquitoes.Main;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -15,18 +17,29 @@ public class Mosquito {
 	public Mosquito(Random rand, int id, int ticksExisted) {
 		this.rand = rand;
 		this.ticksExisted = ticksExisted;
+		this.id = id;
+		rotation = rand.nextFloat() * 360;
+		initPos();
+		prevX = x;
+		prevY = y;
+	}
+
+	private void initPos() {
 		targetX = randomXPos();
 		targetY = randomYPos();
-		rotation = rand.nextFloat() * 360;
-		if (ticksExisted < arrivingDuration() * 0.8f) {
+		if (ticksExisted < arrivingDuration() * 0.4f) {
 			x = randomXPosOutside();
 			y = randomYPosOutside();
 		} else {
 			x = targetX;
 			y = targetY;
 		}
-		prevX = x;
-		prevY = y;
+
+		if (ticksExisted > startsLeavingAfter()) {
+			targetX = randomXPosOutside();
+			targetY = randomYPosOutside();
+
+		}
 	}
 
 	public Mosquito(Random rand, int id) {
@@ -67,7 +80,17 @@ public class Mosquito {
 				legRotation = (float) MathHelper.lerp(0.15, legRotation, -20);
 			}
 
+		} else {
+			if (isSucking() && hasMalaria()) {
+				if (rand.nextDouble() < 0.003 && !player.isPotionActive(Main.MALARIA_EFFECT)) {
+					player.addPotionEffect(new EffectInstance(Main.MALARIA_EFFECT, 20 * 60 * 50));
+				}
+			}
 		}
+	}
+
+	private boolean hasMalaria() {
+		return id % 10 == 0;
 	}
 
 	private Vec3d direction() {

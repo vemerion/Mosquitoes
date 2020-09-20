@@ -3,6 +3,8 @@ package mod.vemerion.mosquitoes;
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import net.minecraft.item.Item;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -21,7 +23,15 @@ public class Main {
 	
 	@ObjectHolder(Main.MODID + ":mosquito_wing_item")
 	public static final Item MOSQUITO_WING_ITEM = null;
-
+	
+	@ObjectHolder(Main.MODID + ":malaria_effect")
+	public static final Effect MALARIA_EFFECT = null;
+	
+	@ObjectHolder(Main.MODID + ":malaria_cure_effect")
+	public static final Effect MALARIA_CURE_EFFECT = null;
+	
+	@ObjectHolder(Main.MODID + ":malaria_cure_potion")
+	public static final Potion MALARIA_CURE_POTION = null;
 
 	@ObjectHolder(Main.MODID + ":flying_mosquito_sound")
 	public static final SoundEvent FLYING_MOSQUITO_SOUND = null;
