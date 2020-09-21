@@ -2,6 +2,7 @@ package mod.vemerion.mosquitoes;
 
 import java.awt.Color;
 
+import mod.vemerion.mosquitoes.block.CitronellaBlock;
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.capacity.MosquitoesStorage;
 import mod.vemerion.mosquitoes.item.MosquitoWingItem;
@@ -11,9 +12,15 @@ import mod.vemerion.mosquitoes.network.Network;
 import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.SynchMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.WavingMessage;
+import mod.vemerion.mosquitoes.potion.CitronellaEffect;
 import mod.vemerion.mosquitoes.potion.MalariaCureEffect;
 import mod.vemerion.mosquitoes.potion.MalariaEffect;
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -40,9 +47,19 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public class ModEventSubscriber {
 
 	@SubscribeEvent
+	public static void onRegisterBlock(RegistryEvent.Register<Block> event) {
+		event.getRegistry().register(setup(new CitronellaBlock(Block.Properties.create(Material.PLANTS)
+				.doesNotBlockMovement().hardnessAndResistance(0).sound(SoundType.PLANT)), "citronella_block"));
+	}
+
+	@SubscribeEvent
 	public static void onRegisterItem(RegistryEvent.Register<Item> event) {
 		event.getRegistry().register(setup(new SwatterItem(), "swatter_item"));
 		event.getRegistry().register(setup(new MosquitoWingItem(), "mosquito_wing_item"));
+
+		event.getRegistry().register(
+				setup(new BlockItem(Main.CITRONELLA_BLOCK, new Item.Properties().group(ItemGroup.DECORATIONS)),
+						"citronella_block_item"));
 	}
 
 	@SubscribeEvent
@@ -50,12 +67,19 @@ public class ModEventSubscriber {
 		event.getRegistry().register(setup(new MalariaEffect(EffectType.HARMFUL, 0), "malaria_effect"));
 		event.getRegistry().register(setup(
 				new MalariaCureEffect(EffectType.BENEFICIAL, new Color(0, 255, 172).getRGB()), "malaria_cure_effect"));
+		event.getRegistry().register(setup(
+				new CitronellaEffect(EffectType.BENEFICIAL, new Color(197, 166, 70).getRGB()), "citronella_effect"));
+
 	}
 
 	@SubscribeEvent
 	public static void onRegisterPotion(RegistryEvent.Register<Potion> event) {
 		event.getRegistry()
 				.register(setup(new Potion(new EffectInstance(Main.MALARIA_CURE_EFFECT, 1)), "malaria_cure_potion"));
+		event.getRegistry().register(
+				setup(new Potion(new EffectInstance(Main.CITRONELLA_EFFECT, 20 * 60 * 20)), "citronella_potion"));
+		event.getRegistry().register(setup(new Potion("citronella_potion", new EffectInstance(Main.CITRONELLA_EFFECT, 20 * 60 * 20 * 2)),
+				"long_citronella_potion"));
 
 	}
 
@@ -73,13 +97,24 @@ public class ModEventSubscriber {
 				SynchMosquitoesMessage::decode, SynchMosquitoesMessage::handle);
 
 		DeferredWorkQueue.runLater(() -> addPotionRecipes());
+		DeferredWorkQueue.runLater(() -> CitronellaBlock.addFlowerGen());
 	}
 
 	private static void addPotionRecipes() {
-		BrewingRecipeRegistry.addRecipe(new MalariaCureEffect.MalariaCurePotionRecipe(
-				Ingredient.fromStacks(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.AWKWARD)),
+		BrewingRecipeRegistry.addRecipe(new MalariaCureEffect.ModBrewingRecipe(
+				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.AWKWARD),
 				Ingredient.fromItems(Main.MOSQUITO_WING_ITEM),
 				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Main.MALARIA_CURE_POTION)));
+
+		BrewingRecipeRegistry.addRecipe(new MalariaCureEffect.ModBrewingRecipe(
+				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Potions.AWKWARD),
+				Ingredient.fromItems(Main.CITRONELLA_BLOCK_ITEM),
+				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Main.CITRONELLA_POTION)));
+
+		BrewingRecipeRegistry.addRecipe(new MalariaCureEffect.ModBrewingRecipe(
+				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Main.CITRONELLA_POTION),
+				Ingredient.fromItems(Items.REDSTONE),
+				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), Main.LONG_CITRONELLA_POTION)));
 	}
 
 	@SubscribeEvent

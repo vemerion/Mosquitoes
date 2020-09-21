@@ -9,6 +9,7 @@ import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
 import mod.vemerion.mosquitoes.network.Network;
 import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.WavingMessage;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -28,7 +29,7 @@ public class Mosquitoes {
 	public Mosquitoes() {
 		this.init();
 	}
-	
+
 	private void init() {
 		rand = new Random();
 		mosquitoes = new ArrayList<>();
@@ -66,9 +67,11 @@ public class Mosquitoes {
 				}
 				int count = rand.nextInt(4) + 3;
 
-				mosquitoArrives(count);
-				Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-						new SpawnMosquitoesMessage(count));
+				if (!player.isPotionActive(Main.CITRONELLA_EFFECT)) {
+					mosquitoArrives(count);
+					Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+							new SpawnMosquitoesMessage(count));
+				}
 
 			}
 		} else {
@@ -96,9 +99,10 @@ public class Mosquitoes {
 
 		if (removed == null)
 			return false;
-		
+
 		if (rand.nextDouble() < 0.1) {
-			ItemEntity wing = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(), new ItemStack(Main.MOSQUITO_WING_ITEM));
+			ItemEntity wing = new ItemEntity(player.world, player.getPosX(), player.getPosY(), player.getPosZ(),
+					new ItemStack(Main.MOSQUITO_WING_ITEM));
 			player.world.addEntity(wing);
 		}
 
@@ -164,7 +168,7 @@ public class Mosquitoes {
 	public Mosquito get(int i) {
 		return mosquitoes.get(i);
 	}
-	
+
 	public void load(CompoundNBT compound) {
 		init();
 		idCounter = compound.getInt("idCounter");
@@ -174,7 +178,7 @@ public class Mosquitoes {
 			mosquitoes.add(new Mosquito(rand, ids[i], ticksExisted[i]));
 		}
 	}
-	
+
 	public CompoundNBT save() {
 		CompoundNBT compound = new CompoundNBT();
 		int[] ticksExisted = new int[count()];
@@ -189,7 +193,7 @@ public class Mosquitoes {
 		return compound;
 	}
 
-	public static Mosquitoes getMosquitoes(PlayerEntity player) {
-		return player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
+	public static Mosquitoes getMosquitoes(LivingEntity entity) {
+		return entity.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
 	}
 }

@@ -1,6 +1,7 @@
 package mod.vemerion.mosquitoes;
 
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.potion.Effect;
@@ -24,14 +25,29 @@ public class Main {
 	@ObjectHolder(Main.MODID + ":mosquito_wing_item")
 	public static final Item MOSQUITO_WING_ITEM = null;
 	
+	@ObjectHolder(Main.MODID + ":citronella_block_item")
+	public static final Item CITRONELLA_BLOCK_ITEM = null;
+	
+	@ObjectHolder(Main.MODID + ":citronella_block")
+	public static final Block CITRONELLA_BLOCK = null;
+	
 	@ObjectHolder(Main.MODID + ":malaria_effect")
 	public static final Effect MALARIA_EFFECT = null;
 	
 	@ObjectHolder(Main.MODID + ":malaria_cure_effect")
 	public static final Effect MALARIA_CURE_EFFECT = null;
 	
+	@ObjectHolder(Main.MODID + ":citronella_effect")
+	public static final Effect CITRONELLA_EFFECT = null;
+	
 	@ObjectHolder(Main.MODID + ":malaria_cure_potion")
 	public static final Potion MALARIA_CURE_POTION = null;
+	
+	@ObjectHolder(Main.MODID + ":citronella_potion")
+	public static final Potion CITRONELLA_POTION = null;
+	
+	@ObjectHolder(Main.MODID + ":long_citronella_potion")
+	public static final Potion LONG_CITRONELLA_POTION = null;
 
 	@ObjectHolder(Main.MODID + ":flying_mosquito_sound")
 	public static final SoundEvent FLYING_MOSQUITO_SOUND = null;

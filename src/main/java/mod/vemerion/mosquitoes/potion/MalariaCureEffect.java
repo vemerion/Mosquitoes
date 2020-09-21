@@ -17,7 +17,7 @@ public class MalariaCureEffect extends Effect {
 	public MalariaCureEffect(EffectType typeIn, int liquidColorIn) {
 		super(typeIn, liquidColorIn);
 	}
-	
+
 	@Override
 	public void affectEntity(Entity source, Entity indirectSource, LivingEntity entityLivingBaseIn, int amplifier,
 			double health) {
@@ -28,16 +28,20 @@ public class MalariaCureEffect extends Effect {
 	public boolean isInstant() {
 		return true;
 	}
-	
-	public static class MalariaCurePotionRecipe extends BrewingRecipe {
 
-		public MalariaCurePotionRecipe(Ingredient input, Ingredient ingredient, ItemStack output) {
-			super(input, ingredient, output);
+	public static class ModBrewingRecipe extends BrewingRecipe {
+		private ItemStack inputStack;
+
+		public ModBrewingRecipe(ItemStack inputStack, Ingredient ingredient, ItemStack output) {
+			super(Ingredient.fromStacks(inputStack), ingredient, output);
+			this.inputStack = inputStack;
 		}
 
 		@Override
-		public boolean isInput(ItemStack input) {
-			return super.isInput(input) && PotionUtils.getPotionFromItem(input) == Potions.AWKWARD;
+		public boolean isInput(ItemStack stack) {
+			return super.isInput(stack)
+					&& PotionUtils.getPotionFromItem(stack) == PotionUtils.getPotionFromItem(inputStack);
 		}
+
 	}
 }
