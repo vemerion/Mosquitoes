@@ -32,9 +32,8 @@ public class Mosquitoes {
 			BiomeDictionary.Type.BEACH);
 
 	private static final int MAX_SPAWN_TIMER = 20 * 60 * 15;
-
 	private static final int MAX_DAMAGE_COOLDOWN = 20;
-
+	private static final DamageSource SUCKING = new DamageSource("sucking").setDamageBypassesArmor();
 
 	private List<Mosquito> mosquitoes;
 	private Random rand;
@@ -72,7 +71,7 @@ public class Mosquitoes {
 			damageCooldown -= sucking;
 			if (damageCooldown < 0) {
 				damageCooldown = MAX_DAMAGE_COOLDOWN;
-				player.attackEntityFrom(DamageSource.GENERIC, 1);
+				player.attackEntityFrom(SUCKING, 1);
 			}
 
 			Biome biome = player.world.getBiome(player.getPosition());
