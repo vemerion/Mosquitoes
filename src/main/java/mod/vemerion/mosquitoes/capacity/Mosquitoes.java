@@ -1,8 +1,12 @@
 package mod.vemerion.mosquitoes.capacity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 
 import mod.vemerion.mosquitoes.Main;
 import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
@@ -16,15 +20,28 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class Mosquitoes {
+
+	private static final Set<BiomeDictionary.Type> NO_SPAWN = ImmutableSet.of(BiomeDictionary.Type.COLD,
+			BiomeDictionary.Type.DRY, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.VOID,
+			BiomeDictionary.Type.NETHER, BiomeDictionary.Type.END, BiomeDictionary.Type.MOUNTAIN,
+			BiomeDictionary.Type.BEACH);
+
+	private static final int MAX_SPAWN_TIMER = 20 * 60 * 15;
+
+	private static final int MAX_DAMAGE_COOLDOWN = 20;
+
+
 	private List<Mosquito> mosquitoes;
 	private Random rand;
-	private int timer;
-	private int waves;
+	private int spawnTimer;
 	private int idCounter;
 	private int waveHandsCooldown;
+	private int damageCooldown;
 
 	public Mosquitoes() {
 		this.init();
@@ -33,8 +50,7 @@ public class Mosquitoes {
 	private void init() {
 		rand = new Random();
 		mosquitoes = new ArrayList<>();
-		timer = 20 * 10;
-		waves = rand.nextInt(2) + 2;
+		spawnTimer = MAX_SPAWN_TIMER;
 		idCounter = 0;
 		waveHandsCooldown = 0;
 	}
@@ -53,20 +69,17 @@ public class Mosquitoes {
 
 		if (!player.world.isRemote) {
 
-			if (player.ticksExisted % 10 == 0)
-				player.attackEntityFrom(DamageSource.GENERIC, sucking);
+			damageCooldown -= sucking;
+			if (damageCooldown < 0) {
+				damageCooldown = MAX_DAMAGE_COOLDOWN;
+				player.attackEntityFrom(DamageSource.GENERIC, 1);
+			}
 
-			if (timer-- < 0) {
-				if (waves == 0) {
-					timer = 20 * 60 * 5 + rand.nextInt(20 * 60);
-					waves = rand.nextInt(2) + 2;
-				} else {
-					timer = 20 * 10 + rand.nextInt(20 * 10);
-
-					waves--;
-				}
-				int count = rand.nextInt(4) + 3;
-
+			Biome biome = player.world.getBiome(player.getPosition());
+			decrementSpawnTimer(biome);
+			if (spawnTimer < 0) {
+				spawnTimer = MAX_SPAWN_TIMER;
+				int count = getSpawnCount(biome);
 				if (!player.isPotionActive(Main.CITRONELLA_EFFECT)) {
 					mosquitoArrives(count);
 					Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
@@ -88,6 +101,34 @@ public class Mosquitoes {
 				mosquitoes.remove(i);
 			}
 		}
+	}
+
+	public void decrementSpawnTimer(Biome biome) {
+		Set<BiomeDictionary.Type> intersection = new HashSet<>(BiomeDictionary.getTypes(biome));
+		intersection.retainAll(NO_SPAWN);
+		if (intersection.isEmpty()) {
+			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.RIVER)
+					|| BiomeDictionary.hasType(biome, BiomeDictionary.Type.SWAMP)) {
+				spawnTimer -= rand.nextInt(2) + 2;
+			} else {
+				if (rand.nextBoolean())
+					spawnTimer--;
+			}
+		}
+	}
+
+	public int getSpawnCount(Biome biome) {
+		Set<BiomeDictionary.Type> intersection = new HashSet<>(BiomeDictionary.getTypes(biome));
+		intersection.retainAll(NO_SPAWN);
+		if (intersection.isEmpty()) {
+			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.RIVER)
+					|| BiomeDictionary.hasType(biome, BiomeDictionary.Type.SWAMP)) {
+				return rand.nextInt(4) + 2;
+			} else {
+				return rand.nextInt(3) + 1;
+			}
+		}
+		return 0;
 	}
 
 	// The server picks a random mosquito to kill
@@ -172,6 +213,8 @@ public class Mosquitoes {
 	public void load(CompoundNBT compound) {
 		init();
 		idCounter = compound.getInt("idCounter");
+		if (compound.contains("spawnTimer"))
+			spawnTimer = compound.getInt("spawnTimer");
 		int[] ticksExisted = compound.getIntArray("ticksExisted");
 		int[] ids = compound.getIntArray("ids");
 		for (int i = 0; i < ids.length; i++) {
@@ -190,6 +233,7 @@ public class Mosquitoes {
 		compound.putIntArray("ticksExisted", ticksExisted);
 		compound.putIntArray("ids", ids);
 		compound.putInt("idCounter", idCounter);
+		compound.putInt("spawnTimer", spawnTimer);
 		return compound;
 	}
 
