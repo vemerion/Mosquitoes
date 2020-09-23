@@ -6,9 +6,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mod.vemerion.mosquitoes.capacity.Mosquito;
 import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.model.MosquitoModel;
-import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
-import mod.vemerion.mosquitoes.network.Network;
-import mod.vemerion.mosquitoes.network.WavingMessage;
+import mod.vemerion.mosquitoes.model.TickModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -19,7 +17,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
@@ -30,13 +27,14 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 @SuppressWarnings("deprecation")
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEventSubscriber {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Main.MODID, "textures/entity/mosquito.png");
+	private static final ResourceLocation MOSQUITO_TEXTURE = new ResourceLocation(Main.MODID,
+			"textures/entity/mosquito.png");
+	private static final ResourceLocation TICK_TEXTURE = new ResourceLocation(Main.MODID, "textures/entity/tick.png");
 
 	@SubscribeEvent
 	public static void renderMosquito(RenderHandEvent event) {
@@ -45,7 +43,7 @@ public class ClientForgeEventSubscriber {
 		Mosquitoes mosquitoes = player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
 		for (int i = 0; i < mosquitoes.count(); i++) {
 			Mosquito mosquito = mosquitoes.get(i);
-			IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(model.getRenderType(TEXTURE));
+			IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(model.getRenderType(MOSQUITO_TEXTURE));
 
 			model.animate(mosquito, event.getPartialTicks());
 			model.renderMosquito(new MatrixStack(), ivertexbuilder, event.getLight(), OverlayTexture.NO_OVERLAY,
@@ -80,10 +78,21 @@ public class ClientForgeEventSubscriber {
 	public static void renderWaving(RenderHandEvent event) {
 		AbstractClientPlayerEntity player = Minecraft.getInstance().player;
 		float swingProgress = event.getSwingProgress();
-		if (player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && swingProgress > 0 && hasMosquitoes(player)) {
+		if (player.getHeldItemMainhand().isEmpty() && player.getHeldItemOffhand().isEmpty() && swingProgress > 0
+				&& hasMosquitoes(player)) {
 			event.setCanceled(true);
 			renderWavingHands(player, event.getMatrixStack(), event.getBuffers(), event.getLight(), swingProgress);
 		}
+	}
+
+	@SubscribeEvent
+	public static void renderTick(RenderHandEvent event) {
+		TickModel model = new TickModel();
+		PlayerEntity player = Minecraft.getInstance().player;
+		IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(model.getRenderType(TICK_TEXTURE));
+		model.animate(player.ticksExisted, event.getPartialTicks());
+		model.renderTick(new MatrixStack(), ivertexbuilder, event.getLight(), OverlayTexture.NO_OVERLAY,
+				event.getPartialTicks());
 	}
 
 	private static void renderWavingHands(AbstractClientPlayerEntity player, MatrixStack matrix,
@@ -119,7 +128,7 @@ public class ClientForgeEventSubscriber {
 			Mosquitoes.getMosquitoes(event.getPlayer()).waveHands();
 		}
 	}
-	
+
 	private static boolean hasMosquitoes(PlayerEntity player) {
 		return Mosquitoes.getMosquitoes(player).count() > 0;
 	}
