@@ -2,7 +2,7 @@ package mod.vemerion.mosquitoes.network;
 
 import java.util.function.Supplier;
 
-import mod.vemerion.mosquitoes.capacity.Mosquitoes;
+import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;

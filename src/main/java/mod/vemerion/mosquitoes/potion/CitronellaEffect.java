@@ -1,6 +1,6 @@
 package mod.vemerion.mosquitoes.potion;
 
-import mod.vemerion.mosquitoes.capacity.Mosquitoes;
+import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;

@@ -7,6 +7,7 @@ import java.util.Random;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
+import mod.vemerion.mosquitoes.tick.Tick;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
@@ -92,7 +93,7 @@ public class TickModel extends Model {
 		this.head.addChild(this.rightLeg4);
 		this.head.addChild(this.leftLeg1);
 		this.head.addChild(this.rightLeg2);
-		this.head.addChild(this.body);
+//		this.head.addChild(this.body);
 		this.head.addChild(this.rightLeg1);
 		this.head.addChild(this.rightLeg3);
 
@@ -116,32 +117,54 @@ public class TickModel extends Model {
 		}
 	}
 
-	public void renderTick(MatrixStack matrix, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn,
-			float partialTicks) {
+	public void renderTick(Tick tick, MatrixStack matrix, IVertexBuilder bufferIn, int packedLightIn,
+			int packedOverlayIn, float partialTicks) {
 		matrix.push();
-		matrix.translate(0, 0, -0.1);
-		matrix.rotate(new Quaternion(90, 0, 0, true));
-		matrix.scale(0.05f, 0.05f, 0.05f);
+		matrix.translate(tick.getX(partialTicks), tick.getY(partialTicks), -0.1);
+		matrix.rotate(new Quaternion(90, tick.getDirection(), 0, true));
+		matrix.scale(0.025f, 0.025f, 0.025f);
+		
+		
 		head.render(matrix, bufferIn, packedLightIn, packedOverlayIn);
+		
+		matrix.push();
+		head.translateRotate(matrix);
+		float bellySize = tick.getBellySize(partialTicks);
+		matrix.translate(0, 1 / 16f, 1 / 16f);
+		matrix.scale(bellySize, bellySize, bellySize);
+		matrix.translate(0, -1 / 16f, -1 / 16f);
+
+		body.render(matrix, bufferIn, packedLightIn, packedOverlayIn);
+		matrix.pop();
 		matrix.pop();
 	}
 
-	public void animate(int ticksExisted, float partialTicks) {
-		float ageInTicks = ticksExisted + partialTicks;
+	public void animate(Tick tick, float partialTicks) {
+		float ageInTicks = tick.ticksExisted() + partialTicks;
 
-		// Teeth
-		leftTooth.rotateAngleZ = MathHelper.sin(ageInTicks / 40 * (float) Math.PI * 2) * (float) Math.PI / 12;
-		rightTooth.rotateAngleZ = -MathHelper.sin(ageInTicks / 40 * (float) Math.PI * 2) * (float) Math.PI / 12;
+		if (tick.isMoving()) {
+			// Teeth
+			leftTooth.rotateAngleZ = MathHelper.sin(ageInTicks / 40 * (float) Math.PI * 2) * (float) Math.PI / 12;
+			rightTooth.rotateAngleZ = -MathHelper.sin(ageInTicks / 40 * (float) Math.PI * 2) * (float) Math.PI / 12;
 
-		// Legs
-		Random rand = new Random(0);
-		for (ModelRenderer mr : legGroup1) {
-			mr.rotateAngleX = legStartRot.get(mr)
-					+ MathHelper.sin((ageInTicks + rand.nextFloat() * 10) / 60 * (float) Math.PI * 2) * (float) Math.PI / 18;
-		}
-		for (ModelRenderer mr : legGroup2) {
-			mr.rotateAngleX = legStartRot.get(mr)
-					- MathHelper.sin((ageInTicks + rand.nextFloat() * 10) / 60 * (float) Math.PI * 2) * (float) Math.PI / 18;
+			// Legs
+			Random rand = new Random(0);
+			for (ModelRenderer mr : legGroup1) {
+				mr.rotateAngleX = legStartRot.get(mr)
+						+ MathHelper.sin((ageInTicks + rand.nextFloat() * 10) / 60 * (float) Math.PI * 2)
+								* (float) Math.PI / 18;
+			}
+			for (ModelRenderer mr : legGroup2) {
+				mr.rotateAngleX = legStartRot.get(mr)
+						- MathHelper.sin((ageInTicks + rand.nextFloat() * 10) / 60 * (float) Math.PI * 2)
+								* (float) Math.PI / 18;
+			}
+		} else {
+			// Teeth
+			if (ageInTicks % 320 / 320 < 1 / 4f) {
+				leftTooth.rotateAngleZ = MathHelper.sin(ageInTicks / 80 * (float) Math.PI * 2) * (float) Math.PI / 30;
+				rightTooth.rotateAngleZ = -MathHelper.sin(ageInTicks / 80 * (float) Math.PI * 2) * (float) Math.PI / 30;
+			}
 		}
 	}
 

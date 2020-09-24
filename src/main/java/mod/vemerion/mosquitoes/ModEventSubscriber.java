@@ -3,18 +3,21 @@ package mod.vemerion.mosquitoes;
 import java.awt.Color;
 
 import mod.vemerion.mosquitoes.block.CitronellaBlock;
-import mod.vemerion.mosquitoes.capacity.Mosquitoes;
-import mod.vemerion.mosquitoes.capacity.MosquitoesStorage;
 import mod.vemerion.mosquitoes.item.MosquitoWingItem;
 import mod.vemerion.mosquitoes.item.SwatterItem;
+import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
+import mod.vemerion.mosquitoes.mosquito.MosquitoesStorage;
 import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
 import mod.vemerion.mosquitoes.network.Network;
 import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.SynchMosquitoesMessage;
+import mod.vemerion.mosquitoes.network.SynchTicksMessage;
 import mod.vemerion.mosquitoes.network.WavingMessage;
 import mod.vemerion.mosquitoes.potion.CitronellaEffect;
 import mod.vemerion.mosquitoes.potion.MalariaCureEffect;
 import mod.vemerion.mosquitoes.potion.MalariaEffect;
+import mod.vemerion.mosquitoes.tick.Ticks;
+import mod.vemerion.mosquitoes.tick.TicksStorage;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -86,6 +89,7 @@ public class ModEventSubscriber {
 	@SubscribeEvent
 	public static void setup(FMLCommonSetupEvent event) {
 		CapabilityManager.INSTANCE.register(Mosquitoes.class, new MosquitoesStorage(), Mosquitoes::new);
+		CapabilityManager.INSTANCE.register(Ticks.class, new TicksStorage(), Ticks::new);
 
 		Network.INSTANCE.registerMessage(0, SpawnMosquitoesMessage.class, SpawnMosquitoesMessage::encode,
 				SpawnMosquitoesMessage::decode, SpawnMosquitoesMessage::handle);
@@ -95,6 +99,9 @@ public class ModEventSubscriber {
 				AttackMosquitoMessage::decode, AttackMosquitoMessage::handle);
 		Network.INSTANCE.registerMessage(3, SynchMosquitoesMessage.class, SynchMosquitoesMessage::encode,
 				SynchMosquitoesMessage::decode, SynchMosquitoesMessage::handle);
+		Network.INSTANCE.registerMessage(4, SynchTicksMessage.class, SynchTicksMessage::encode,
+				SynchTicksMessage::decode, SynchTicksMessage::handle);
+
 
 		DeferredWorkQueue.runLater(() -> addPotionRecipes());
 		DeferredWorkQueue.runLater(() -> CitronellaBlock.addFlowerGen());

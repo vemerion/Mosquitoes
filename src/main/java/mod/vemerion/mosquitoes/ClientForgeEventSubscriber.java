@@ -3,10 +3,12 @@ package mod.vemerion.mosquitoes;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import mod.vemerion.mosquitoes.capacity.Mosquito;
-import mod.vemerion.mosquitoes.capacity.Mosquitoes;
 import mod.vemerion.mosquitoes.model.MosquitoModel;
 import mod.vemerion.mosquitoes.model.TickModel;
+import mod.vemerion.mosquitoes.mosquito.Mosquito;
+import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
+import mod.vemerion.mosquitoes.tick.Tick;
+import mod.vemerion.mosquitoes.tick.Ticks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -89,10 +91,14 @@ public class ClientForgeEventSubscriber {
 	public static void renderTick(RenderHandEvent event) {
 		TickModel model = new TickModel();
 		PlayerEntity player = Minecraft.getInstance().player;
-		IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(model.getRenderType(TICK_TEXTURE));
-		model.animate(player.ticksExisted, event.getPartialTicks());
-		model.renderTick(new MatrixStack(), ivertexbuilder, event.getLight(), OverlayTexture.NO_OVERLAY,
-				event.getPartialTicks());
+		Ticks ticks = Ticks.getTicks(player);
+		if (ticks.hasTick()) {
+			Tick tick = ticks.getTick();
+			IVertexBuilder ivertexbuilder = event.getBuffers().getBuffer(model.getRenderType(TICK_TEXTURE));
+			model.animate(tick, event.getPartialTicks());
+			model.renderTick(tick, new MatrixStack(), ivertexbuilder, event.getLight(), OverlayTexture.NO_OVERLAY,
+					event.getPartialTicks());
+		}
 	}
 
 	private static void renderWavingHands(AbstractClientPlayerEntity player, MatrixStack matrix,

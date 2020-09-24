@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import mod.vemerion.mosquitoes.capacity.Mosquito;
+import mod.vemerion.mosquitoes.mosquito.Mosquito;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;

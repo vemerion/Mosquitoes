@@ -1,6 +1,7 @@
 package mod.vemerion.mosquitoes;
 
-import mod.vemerion.mosquitoes.capacity.Mosquitoes;
+import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
+import mod.vemerion.mosquitoes.tick.Ticks;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.particles.BasicParticleType;
@@ -63,4 +64,8 @@ public class Main {
 	
 	@CapabilityInject(Mosquitoes.class)
 	public static final Capability<Mosquitoes> MOSQUITOES_CAP = null;
+	
+	@CapabilityInject(Ticks.class)
+	public static final Capability<Ticks> TICKS_CAP = null;
+
 }

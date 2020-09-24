@@ -1,4 +1,4 @@
-package mod.vemerion.mosquitoes.capacity;
+package mod.vemerion.mosquitoes.mosquito;
 
 
 import mod.vemerion.mosquitoes.Main;

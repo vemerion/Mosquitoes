@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import mod.vemerion.mosquitoes.Main;
-import mod.vemerion.mosquitoes.capacity.Mosquitoes;
+import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.PacketBuffer;

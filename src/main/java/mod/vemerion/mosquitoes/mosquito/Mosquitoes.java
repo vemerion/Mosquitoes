@@ -1,4 +1,4 @@
-package mod.vemerion.mosquitoes.capacity;
+package mod.vemerion.mosquitoes.mosquito;
 
 import java.util.ArrayList;
 import java.util.HashSet;
