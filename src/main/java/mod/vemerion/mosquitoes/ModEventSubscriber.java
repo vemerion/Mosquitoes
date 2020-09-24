@@ -5,6 +5,7 @@ import java.awt.Color;
 import mod.vemerion.mosquitoes.block.CitronellaBlock;
 import mod.vemerion.mosquitoes.item.MosquitoWingItem;
 import mod.vemerion.mosquitoes.item.SwatterItem;
+import mod.vemerion.mosquitoes.item.TweezersItem;
 import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
 import mod.vemerion.mosquitoes.mosquito.MosquitoesStorage;
 import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
@@ -59,6 +60,8 @@ public class ModEventSubscriber {
 	public static void onRegisterItem(RegistryEvent.Register<Item> event) {
 		event.getRegistry().register(setup(new SwatterItem(), "swatter_item"));
 		event.getRegistry().register(setup(new MosquitoWingItem(), "mosquito_wing_item"));
+		event.getRegistry().register(setup(new TweezersItem(), "tweezers_item"));
+
 
 		event.getRegistry().register(
 				setup(new BlockItem(Main.CITRONELLA_BLOCK, new Item.Properties().group(ItemGroup.DECORATIONS)),

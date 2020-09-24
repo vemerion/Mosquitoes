@@ -26,6 +26,10 @@ public class Main {
 	@ObjectHolder(Main.MODID + ":mosquito_wing_item")
 	public static final Item MOSQUITO_WING_ITEM = null;
 	
+	@ObjectHolder(Main.MODID + ":tweezers_item")
+	public static final Item TWEEZERS_ITEM = null;
+
+	
 	@ObjectHolder(Main.MODID + ":citronella_block_item")
 	public static final Item CITRONELLA_BLOCK_ITEM = null;
 	
