@@ -1,7 +1,6 @@
 package mod.vemerion.mosquitoes.mosquito;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -20,18 +19,18 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class Mosquitoes {
 
-	private static final Set<BiomeDictionary.Type> NO_SPAWN = ImmutableSet.of(BiomeDictionary.Type.COLD,
-			BiomeDictionary.Type.DRY, BiomeDictionary.Type.OCEAN, BiomeDictionary.Type.VOID,
-			BiomeDictionary.Type.NETHER, BiomeDictionary.Type.END, BiomeDictionary.Type.MOUNTAIN,
-			BiomeDictionary.Type.BEACH);
+	private static final Set<Biome.Category> NO_SPAWN = ImmutableSet.of(Biome.Category.TAIGA,
+			Biome.Category.EXTREME_HILLS, Biome.Category.MESA, Biome.Category.ICY, Biome.Category.THEEND,
+			Biome.Category.BEACH, Biome.Category.OCEAN, Biome.Category.DESERT, Biome.Category.NETHER);
 
-	private static final int MAX_SPAWN_TIMER = 20 * 60 * 15;
+	// TODO: INCREASE THIS
+	private static final int MAX_SPAWN_TIMER = 20 * 10;
 	private static final int MAX_DAMAGE_COOLDOWN = 20;
 	private static final DamageSource SUCKING = new DamageSource("sucking").setDamageBypassesArmor();
 
@@ -74,7 +73,7 @@ public class Mosquitoes {
 				player.attackEntityFrom(SUCKING, 1);
 			}
 
-			Biome biome = player.world.getBiome(player.getPosition());
+			Biome biome = player.world.getBiome(new BlockPos(player.getPositionVec()));
 			decrementSpawnTimer(biome);
 			if (spawnTimer < 0) {
 				spawnTimer = MAX_SPAWN_TIMER;
@@ -103,11 +102,9 @@ public class Mosquitoes {
 	}
 
 	public void decrementSpawnTimer(Biome biome) {
-		Set<BiomeDictionary.Type> intersection = new HashSet<>(BiomeDictionary.getTypes(biome));
-		intersection.retainAll(NO_SPAWN);
-		if (intersection.isEmpty()) {
-			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.RIVER)
-					|| BiomeDictionary.hasType(biome, BiomeDictionary.Type.SWAMP)) {
+		Biome.Category category = biome.getCategory();
+		if (!NO_SPAWN.contains(category)) {
+			if (category == Biome.Category.RIVER || category == Biome.Category.SWAMP) {
 				spawnTimer -= rand.nextInt(2) + 2;
 			} else {
 				if (rand.nextBoolean())
@@ -117,11 +114,9 @@ public class Mosquitoes {
 	}
 
 	public int getSpawnCount(Biome biome) {
-		Set<BiomeDictionary.Type> intersection = new HashSet<>(BiomeDictionary.getTypes(biome));
-		intersection.retainAll(NO_SPAWN);
-		if (intersection.isEmpty()) {
-			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.RIVER)
-					|| BiomeDictionary.hasType(biome, BiomeDictionary.Type.SWAMP)) {
+		Biome.Category category = biome.getCategory();
+		if (!NO_SPAWN.contains(category)) {
+			if (category == Biome.Category.RIVER || category == Biome.Category.SWAMP) {
 				return rand.nextInt(4) + 2;
 			} else {
 				return rand.nextInt(3) + 1;

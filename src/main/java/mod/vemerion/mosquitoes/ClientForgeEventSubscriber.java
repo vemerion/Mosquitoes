@@ -13,7 +13,6 @@ import mod.vemerion.mosquitoes.tick.Ticks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -25,14 +24,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@SuppressWarnings("deprecation")
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientForgeEventSubscriber {
 
@@ -90,8 +89,8 @@ public class ClientForgeEventSubscriber {
 			float duration = (float) maxDuration - ((float) player.getItemInUseCount() - partialTicks + 1.0f);
 			MatrixStack matrix = event.getMatrixStack();
 			matrix.push();
-			Vec2f prevPosition = TweezersItem.getPosition((int) duration);
-			Vec2f position = TweezersItem.getPosition((int) duration);
+			Vector2f prevPosition = TweezersItem.getPosition((int) duration);
+			Vector2f position = TweezersItem.getPosition((int) duration);
 			float x = MathHelper.lerp(partialTicks, prevPosition.x, position.x);
 			float y = MathHelper.lerp(partialTicks, prevPosition.y, position.y);
 			matrix.translate(x, y, -0.085);

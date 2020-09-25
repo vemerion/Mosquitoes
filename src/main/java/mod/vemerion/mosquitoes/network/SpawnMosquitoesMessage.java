@@ -2,10 +2,6 @@ package mod.vemerion.mosquitoes.network;
 
 import java.util.function.Supplier;
 
-import mod.vemerion.mosquitoes.Main;
-import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -29,13 +25,6 @@ public class SpawnMosquitoesMessage {
 	public static void handle(final SpawnMosquitoesMessage msg, final Supplier<NetworkEvent.Context> supplier) {
 		final NetworkEvent.Context context = supplier.get();
 		context.setPacketHandled(true);
-		context.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			ClientPlayerEntity player = Minecraft.getInstance().player;
-			Mosquitoes mosquitoes = player.getCapability(Main.MOSQUITOES_CAP)
-					.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!"));
-			if (msg.count > 0) {
-				mosquitoes.mosquitoArrives(msg.count);
-			}
-		}));
+		context.enqueueWork(() -> DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientOnlyMethods.spawnMosquitoes(msg.count)));
 	}
 }

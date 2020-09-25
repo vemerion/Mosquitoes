@@ -2,10 +2,6 @@ package mod.vemerion.mosquitoes.network;
 
 import java.util.function.Supplier;
 
-import mod.vemerion.mosquitoes.Main;
-import mod.vemerion.mosquitoes.tick.Ticks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,10 +26,6 @@ public class SynchTicksMessage {
 	public static void handle(final SynchTicksMessage msg, final Supplier<NetworkEvent.Context> supplier) {
 		final NetworkEvent.Context context = supplier.get();
 		context.setPacketHandled(true);
-		context.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			ClientPlayerEntity player = Minecraft.getInstance().player;
-			Ticks ticks = player.getCapability(Main.TICKS_CAP).orElse(new Ticks());
-			ticks.load(msg.compound);
-		}));
+		context.enqueueWork(() -> DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientOnlyMethods.synchTicks(msg.compound)));
 	}
 }

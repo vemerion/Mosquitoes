@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.world.World;
 
 public class TweezersItem extends Item {
@@ -34,13 +34,13 @@ public class TweezersItem extends Item {
 		return ActionResult.resultSuccess(itemstack);
 	}
 
-	public static Vec2f getPosition(int progress) {
+	public static Vector2f getPosition(int progress) {
 		float x = progress / 15 * 0.05f - 0.1f;
 		float y = progress % 15 * 0.2f / 15 - 0.1f;
-		return new Vec2f(x, y);
+		return new Vector2f(x, y);
 	}
 
-	private static float distance(Vec2f p1, Vec2f p2) {
+	private static float distance(Vector2f p1, Vector2f p2) {
 		float x = p1.x - p2.x;
 		float y = p1.y - p2.y;
 		return x * x + y * y;
@@ -54,8 +54,8 @@ public class TweezersItem extends Item {
 			Ticks ticks = Ticks.getTicks(player);
 			if (ticks.hasTick()) {
 				Tick tick = ticks.getTick();
-				Vec2f pos = getPosition(progress);
-				Vec2f tickPos = new Vec2f(tick.getX(0.5f), tick.getY(0.5f));
+				Vector2f pos = getPosition(progress);
+				Vector2f tickPos = new Vector2f(tick.getX(0.5f), tick.getY(0.5f));
 				if (distance(pos, tickPos) < 0.001) {
 					worldIn.playSound(null, entityLiving.getPosX(), entityLiving.getPosY(), entityLiving.getPosZ(), Main.TEAR_SOUND, SoundCategory.PLAYERS, 1, 1);
 					ticks.sendRemoveMessage(player);

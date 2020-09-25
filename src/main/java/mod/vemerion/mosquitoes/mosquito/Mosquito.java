@@ -6,7 +6,7 @@ import mod.vemerion.mosquitoes.Main;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class Mosquito {
 	private float x, y, prevX, prevY, targetX, targetY, rotation, legRotation, prevLegRotation;
@@ -55,7 +55,7 @@ public class Mosquito {
 			prevLegRotation = legRotation;
 
 			if (isArriving()) {
-				Vec3d direction = direction();
+				Vector3d direction = direction();
 				x += direction.x;
 				y += direction.y;
 
@@ -64,7 +64,7 @@ public class Mosquito {
 					targetY = randomYPos();
 				}
 			} else if (isLeaving()) {
-				Vec3d direction = direction();
+				Vector3d direction = direction();
 				x += direction.x;
 				y += direction.y;
 
@@ -93,9 +93,9 @@ public class Mosquito {
 		return id % 10 == 0;
 	}
 
-	private Vec3d direction() {
-		Vec3d pos = new Vec3d(x, y, 0);
-		Vec3d target = new Vec3d(targetX, targetY, 0);
+	private Vector3d direction() {
+		Vector3d pos = new Vector3d(x, y, 0);
+		Vector3d target = new Vector3d(targetX, targetY, 0);
 		double distance = target.squareDistanceTo(pos);
 		double speed = distance < 0.0001 ? 0 : distance < 0.17 ? 0.02 * (distance / 0.17) + 0.005 : 0.025;
 		return target.subtract(pos).normalize().scale(speed);

@@ -21,7 +21,8 @@ public class Ticks {
 
 	private static final Set<Block> SPAWN_POSITIONS = ImmutableSet.of(Blocks.TALL_GRASS, Blocks.GRASS);
 
-	private static final int MAX_SPAWN_TIMER = 20 * 60 * 15;
+	// TODO: INCREASE THIS
+	private static final int MAX_SPAWN_TIMER = 20 * 10;
 
 	private Optional<Tick> tick;
 	private int spawnTimer;
@@ -91,7 +92,7 @@ public class Ticks {
 	}
 
 	private boolean inGrass(PlayerEntity player) {
-		BlockPos pos = player.getPosition();
+		BlockPos pos = new BlockPos(player.getPositionVec());
 		return SPAWN_POSITIONS.contains(player.world.getBlockState(pos).getBlock())
 				|| SPAWN_POSITIONS.contains(player.world.getBlockState(pos.down()).getBlock());
 	}

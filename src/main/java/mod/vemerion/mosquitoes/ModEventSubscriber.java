@@ -39,16 +39,23 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.blockplacer.SimpleBlockPlacer;
+import net.minecraft.world.gen.blockstateprovider.WeightedBlockStateProvider;
+import net.minecraft.world.gen.feature.BlockClusterFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.Features;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-@SuppressWarnings("deprecation")
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModEventSubscriber {
 
@@ -63,7 +70,6 @@ public class ModEventSubscriber {
 		event.getRegistry().register(setup(new SwatterItem(), "swatter_item"));
 		event.getRegistry().register(setup(new MosquitoWingItem(), "mosquito_wing_item"));
 		event.getRegistry().register(setup(new TweezersItem(), "tweezers_item"));
-
 
 		event.getRegistry().register(
 				setup(new BlockItem(Main.CITRONELLA_BLOCK, new Item.Properties().group(ItemGroup.DECORATIONS)),
@@ -86,8 +92,10 @@ public class ModEventSubscriber {
 				.register(setup(new Potion(new EffectInstance(Main.MALARIA_CURE_EFFECT, 1)), "malaria_cure_potion"));
 		event.getRegistry().register(
 				setup(new Potion(new EffectInstance(Main.CITRONELLA_EFFECT, 20 * 60 * 20)), "citronella_potion"));
-		event.getRegistry().register(setup(new Potion("citronella_potion", new EffectInstance(Main.CITRONELLA_EFFECT, 20 * 60 * 20 * 2)),
-				"long_citronella_potion"));
+		event.getRegistry()
+				.register(setup(
+						new Potion("citronella_potion", new EffectInstance(Main.CITRONELLA_EFFECT, 20 * 60 * 20 * 2)),
+						"long_citronella_potion"));
 
 	}
 
@@ -109,9 +117,7 @@ public class ModEventSubscriber {
 		Network.INSTANCE.registerMessage(5, RemoveTickMessage.class, RemoveTickMessage::encode,
 				RemoveTickMessage::decode, RemoveTickMessage::handle);
 
-
 		DeferredWorkQueue.runLater(() -> addPotionRecipes());
-		DeferredWorkQueue.runLater(() -> CitronellaBlock.addFlowerGen());
 	}
 
 	private static void addPotionRecipes() {
