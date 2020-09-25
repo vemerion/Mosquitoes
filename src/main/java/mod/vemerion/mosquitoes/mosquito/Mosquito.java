@@ -59,7 +59,7 @@ public class Mosquito {
 				x += direction.x;
 				y += direction.y;
 
-				if (rand.nextDouble() < 0.3) {
+				if (rand.nextDouble() < 0.05) {
 					targetX = randomXPos();
 					targetY = randomYPos();
 				}
@@ -97,16 +97,20 @@ public class Mosquito {
 		Vec3d pos = new Vec3d(x, y, 0);
 		Vec3d target = new Vec3d(targetX, targetY, 0);
 		double distance = target.squareDistanceTo(pos);
-		double speed = distance < 0.01 ? 0 : distance < 0.17 ? 0.025 * (distance / 0.17) : 0.025;
+		double speed = distance < 0.0001 ? 0 : distance < 0.17 ? 0.02 * (distance / 0.17) + 0.005 : 0.025;
 		return target.subtract(pos).normalize().scale(speed);
 	}
 
 	private float randomYPos() {
-		return rand.nextFloat() * 0.30f - 0.15f;
+		return rand.nextFloat() * 0.28f - 0.14f;
 	}
 
 	private float randomXPos() {
-		return rand.nextFloat() * 0.5f - 0.25f;
+		if (rand.nextBoolean()) {
+			return rand.nextFloat() * 0.05f - 0.025f - 0.15f;
+		} else {
+			return rand.nextFloat() * 0.05f - 0.025f + 0.15f;
+		}
 	}
 
 	private float randomXPosOutside() {
@@ -150,7 +154,7 @@ public class Mosquito {
 	}
 
 	public float getScale(float partialTicks) {
-		return 0.08f;
+		return 0.06f;
 	}
 
 	public float getRotationX() {
