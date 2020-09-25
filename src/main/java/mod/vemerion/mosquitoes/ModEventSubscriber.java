@@ -39,21 +39,13 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.blockplacer.SimpleBlockPlacer;
-import net.minecraft.world.gen.blockstateprovider.WeightedBlockStateProvider;
-import net.minecraft.world.gen.feature.BlockClusterFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.Features;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @EventBusSubscriber(modid = Main.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -116,8 +108,11 @@ public class ModEventSubscriber {
 				SynchTicksMessage::decode, SynchTicksMessage::handle);
 		Network.INSTANCE.registerMessage(5, RemoveTickMessage.class, RemoveTickMessage::encode,
 				RemoveTickMessage::decode, RemoveTickMessage::handle);
-
-		DeferredWorkQueue.runLater(() -> addPotionRecipes());
+	}
+	
+	@SubscribeEvent
+	public static void parallelSetup(ParallelDispatchEvent event) {
+		event.enqueueWork(ModEventSubscriber::addPotionRecipes);
 	}
 
 	private static void addPotionRecipes() {
