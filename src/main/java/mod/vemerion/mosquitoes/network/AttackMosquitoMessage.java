@@ -37,7 +37,7 @@ public class AttackMosquitoMessage {
 		context.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			ClientPlayerEntity player = Minecraft.getInstance().player;
 			Random rand = player.getRNG();
-			Mosquitoes mosquitoes = Mosquitoes.getMosquitoes(player);
+			Mosquitoes mosquitoes = player.getCapability(Main.MOSQUITOES_CAP).orElse(new Mosquitoes());
 
 			if (msg.kill && mosquitoes.killMosquitoClient(msg.id)) {
 				player.playSound(Main.SPLASH_SOUND, 1f, 0.8f + rand.nextFloat() * 0.4f);
