@@ -10,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class Tick {
 	private static final float SPEED = 0.00015f;
-	private static final int MAX_DISEASE_TIMER = 20 * 60; // TODO: INCREASE BEFORE RELEASE
+	private static final int MAX_DISEASE_TIMER = 20 * 60 * 3;
 	
 	private float x, y, targetX, targetY, direction, bellySize, prevBellySize, prevX, prevY;
 	private int ticksExisted;
@@ -105,11 +105,11 @@ public class Tick {
 	}
 
 	private float randomXPosOutside() {
-		return MathHelper.cos((float) Math.toRadians(rand.nextDouble() * 360)) * 0.25f;
+		return rand.nextBoolean() ? -0.15f : 0.15f;
 	}
 
 	private float randomYPosOutside() {
-		return MathHelper.sin((float) Math.toRadians(rand.nextDouble() * 360)) * 0.2f;
+		return rand.nextFloat() * 0.2f - 0.1f;
 	}
 
 	public boolean isMoving() {
