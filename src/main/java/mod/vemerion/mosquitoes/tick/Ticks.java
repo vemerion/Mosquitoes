@@ -21,8 +21,7 @@ public class Ticks {
 
 	private static final Set<Block> SPAWN_POSITIONS = ImmutableSet.of(Blocks.TALL_GRASS, Blocks.GRASS);
 
-	// TODO: Increase value before release
-	private static final int MAX_SPAWN_TIMER = 20 * 10;
+	private static final int MAX_SPAWN_TIMER = 20 * 60 * 15;
 
 	private Optional<Tick> tick;
 	private int spawnTimer;

@@ -8,9 +8,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
 import net.minecraftforge.common.brewing.BrewingRecipe;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
 
 public class MalariaCureEffect extends Effect {
 
