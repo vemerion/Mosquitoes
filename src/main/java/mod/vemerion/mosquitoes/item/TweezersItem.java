@@ -1,7 +1,6 @@
 package mod.vemerion.mosquitoes.item;
 
 import mod.vemerion.mosquitoes.Main;
-import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
 import mod.vemerion.mosquitoes.tick.Tick;
 import mod.vemerion.mosquitoes.tick.Ticks;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +11,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.World;
 
@@ -57,6 +57,7 @@ public class TweezersItem extends Item {
 				Vec2f pos = getPosition(progress);
 				Vec2f tickPos = new Vec2f(tick.getX(0.5f), tick.getY(0.5f));
 				if (distance(pos, tickPos) < 0.001) {
+					worldIn.playSound(null, entityLiving.getPosX(), entityLiving.getPosY(), entityLiving.getPosZ(), Main.TEAR_SOUND, SoundCategory.PLAYERS, 1, 1);
 					ticks.sendRemoveMessage(player);
 					stack.damageItem(1, player, (p) -> {
 						p.sendBreakAnimation(EquipmentSlotType.MAINHAND);

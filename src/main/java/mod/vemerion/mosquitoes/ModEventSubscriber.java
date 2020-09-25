@@ -140,6 +140,8 @@ public class ModEventSubscriber {
 		event.getRegistry().register(setup(smack_sound, "smack_sound"));
 		SoundEvent splash_sound = new SoundEvent(new ResourceLocation(Main.MODID, "splash_sound"));
 		event.getRegistry().register(setup(splash_sound, "splash_sound"));
+		SoundEvent tear_sound = new SoundEvent(new ResourceLocation(Main.MODID, "tear_sound"));
+		event.getRegistry().register(setup(tear_sound, "tear_sound"));
 	}
 
 	@SubscribeEvent

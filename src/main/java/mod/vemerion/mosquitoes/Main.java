@@ -64,7 +64,10 @@ public class Main {
 	public static final SoundEvent SMACK_SOUND = null;
 
 	@ObjectHolder(Main.MODID + ":splash_sound")
-	public static final SoundEvent SPLASH_SOUND = null;     
+	public static final SoundEvent SPLASH_SOUND = null;    
+	
+	@ObjectHolder(Main.MODID + ":tear_sound")
+	public static final SoundEvent TEAR_SOUND = null;     
 	
 	@CapabilityInject(Mosquitoes.class)
 	public static final Capability<Mosquitoes> MOSQUITOES_CAP = null;

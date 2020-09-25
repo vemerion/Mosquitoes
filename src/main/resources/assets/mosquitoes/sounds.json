@@ -46,5 +46,14 @@
         "stream": false
       }
     ]
+  },
+  "tear_sound": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "mosquitoes:tear_sound",
+        "stream": false
+      }
+    ]
   }
 }
