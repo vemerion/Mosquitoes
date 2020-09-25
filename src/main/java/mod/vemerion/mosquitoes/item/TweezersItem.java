@@ -34,12 +34,6 @@ public class TweezersItem extends Item {
 		return ActionResult.resultSuccess(itemstack);
 	}
 
-	@Override
-	public void onUse(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count) {
-		if (!worldIn.isRemote && livingEntityIn instanceof PlayerEntity) {
-		}
-	}
-
 	public static Vec2f getPosition(int progress) {
 		float x = progress / 15 * 0.05f - 0.1f;
 		float y = progress % 15 * 0.2f / 15 - 0.1f;
@@ -63,7 +57,7 @@ public class TweezersItem extends Item {
 				Vec2f pos = getPosition(progress);
 				Vec2f tickPos = new Vec2f(tick.getX(0.5f), tick.getY(0.5f));
 				if (distance(pos, tickPos) < 0.001) {
-					System.out.println("REMOVE TICK");
+					ticks.sendRemoveMessage(player);
 					stack.damageItem(1, player, (p) -> {
 						p.sendBreakAnimation(EquipmentSlotType.MAINHAND);
 					});

@@ -10,6 +10,7 @@ import mod.vemerion.mosquitoes.mosquito.Mosquitoes;
 import mod.vemerion.mosquitoes.mosquito.MosquitoesStorage;
 import mod.vemerion.mosquitoes.network.AttackMosquitoMessage;
 import mod.vemerion.mosquitoes.network.Network;
+import mod.vemerion.mosquitoes.network.RemoveTickMessage;
 import mod.vemerion.mosquitoes.network.SpawnMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.SynchMosquitoesMessage;
 import mod.vemerion.mosquitoes.network.SynchTicksMessage;
@@ -104,6 +105,8 @@ public class ModEventSubscriber {
 				SynchMosquitoesMessage::decode, SynchMosquitoesMessage::handle);
 		Network.INSTANCE.registerMessage(4, SynchTicksMessage.class, SynchTicksMessage::encode,
 				SynchTicksMessage::decode, SynchTicksMessage::handle);
+		Network.INSTANCE.registerMessage(5, RemoveTickMessage.class, RemoveTickMessage::encode,
+				RemoveTickMessage::decode, RemoveTickMessage::handle);
 
 
 		DeferredWorkQueue.runLater(() -> addPotionRecipes());

@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 
 import mod.vemerion.mosquitoes.Main;
 import mod.vemerion.mosquitoes.network.Network;
+import mod.vemerion.mosquitoes.network.RemoveTickMessage;
 import mod.vemerion.mosquitoes.network.SynchTicksMessage;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -81,6 +82,14 @@ public class Ticks {
 					new SynchTicksMessage(save()));
 		}
 	}
+	
+	public void sendRemoveMessage(PlayerEntity player) {
+		if (tick.isPresent()) {
+			tick = Optional.empty();
+			Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+					new RemoveTickMessage());
+		}
+	}
 
 	private boolean inGrass(PlayerEntity player) {
 		BlockPos pos = player.getPosition();
@@ -90,5 +99,9 @@ public class Ticks {
 
 	public static Ticks getTicks(PlayerEntity player) {
 		return player.getCapability(Main.TICKS_CAP).orElse(new Ticks());
+	}
+
+	public void remove() {
+		tick = Optional.empty();
 	}
 }
