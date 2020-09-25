@@ -31,7 +31,7 @@ public class Mosquitoes {
 			BiomeDictionary.Type.NETHER, BiomeDictionary.Type.END, BiomeDictionary.Type.MOUNTAIN,
 			BiomeDictionary.Type.BEACH);
 
-	private static final int MAX_SPAWN_TIMER = 20 * 10;
+	private static final int MAX_SPAWN_TIMER = 20 * 60 * 15;
 	private static final int MAX_DAMAGE_COOLDOWN = 20;
 	private static final DamageSource SUCKING = new DamageSource("sucking").setDamageBypassesArmor();
 
@@ -215,7 +215,6 @@ public class Mosquitoes {
 		idCounter = compound.getInt("idCounter");
 		if (compound.contains("spawnTimer"))
 			spawnTimer = compound.getInt("spawnTimer");
-		spawnTimer = 20 * 10;
 		int[] ticksExisted = compound.getIntArray("ticksExisted");
 		int[] ids = compound.getIntArray("ids");
 		for (int i = 0; i < ids.length; i++) {
