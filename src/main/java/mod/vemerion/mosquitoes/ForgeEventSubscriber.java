@@ -46,10 +46,10 @@ public class ForgeEventSubscriber {
 				(new WeightedBlockStateProvider()).addWeightedBlockstate(Main.CITRONELLA_BLOCK.getDefaultState(), 1),
 				new SimpleBlockPlacer())).tries(32).build();
 			if (event.getCategory() == Biome.Category.SAVANNA) {
-				event.getGeneration().func_242513_a(GenerationStage.Decoration.VEGETAL_DECORATION,
+				event.getGeneration().withFeature(GenerationStage.Decoration.VEGETAL_DECORATION,
 						Feature.FLOWER.withConfiguration(citronellaConfig)
-								.withPlacement(Features.Placements.field_244000_k)
-								.withPlacement(Features.Placements.field_244001_l).func_242731_b(1));
+								.withPlacement(Features.Placements.VEGETATION_PLACEMENT)
+								.withPlacement(Features.Placements.HEIGHTMAP_PLACEMENT).func_242731_b(1));
 			}
 	}
 
