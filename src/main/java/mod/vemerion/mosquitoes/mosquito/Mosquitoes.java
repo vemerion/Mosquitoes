@@ -30,7 +30,7 @@ public class Mosquitoes {
 			Biome.Category.BEACH, Biome.Category.OCEAN, Biome.Category.DESERT, Biome.Category.NETHER);
 
 	// TODO: INCREASE THIS
-	private static final int MAX_SPAWN_TIMER = 20 * 10;
+	private static final int MAX_SPAWN_TIMER = 20 * 30 * 30;
 	private static final int MAX_DAMAGE_COOLDOWN = 20;
 	private static final DamageSource SUCKING = new DamageSource("sucking").setDamageBypassesArmor();
 

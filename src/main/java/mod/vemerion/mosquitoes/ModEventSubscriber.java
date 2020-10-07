@@ -54,7 +54,7 @@ public class ModEventSubscriber {
 	@SubscribeEvent
 	public static void onRegisterBlock(RegistryEvent.Register<Block> event) {
 		event.getRegistry().register(setup(new CitronellaBlock(Block.Properties.create(Material.PLANTS)
-				.doesNotBlockMovement().hardnessAndResistance(0).sound(SoundType.PLANT)), "citronella_block"));
+				.doesNotBlockMovement().zeroHardnessAndResistance().sound(SoundType.PLANT)), "citronella_block"));
 	}
 
 	@SubscribeEvent
