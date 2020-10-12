@@ -17,7 +17,7 @@ public class CitronellaEffect extends Effect {
 		if (!entityLivingBaseIn.world.isRemote) {
 			if (entityLivingBaseIn instanceof PlayerEntity) {
 				PlayerEntity player = (PlayerEntity) entityLivingBaseIn;
-				Mosquitoes.getMosquitoes(entityLivingBaseIn).chaseAwayRandomMosquito(player);
+				Mosquitoes.getMosquitoes(entityLivingBaseIn).citronellaEffect(player);
 			}
 		}
 	}

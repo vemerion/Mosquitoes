@@ -29,8 +29,7 @@ public class Mosquitoes {
 			Biome.Category.EXTREME_HILLS, Biome.Category.MESA, Biome.Category.ICY, Biome.Category.THEEND,
 			Biome.Category.BEACH, Biome.Category.OCEAN, Biome.Category.DESERT, Biome.Category.NETHER);
 
-	// TODO: INCREASE THIS
-	private static final int MAX_SPAWN_TIMER = 20 * 30 * 30;
+	private static final int MAX_SPAWN_TIMER = 20 * 60 * 15;
 	private static final int MAX_DAMAGE_COOLDOWN = 20;
 	private static final DamageSource SUCKING = new DamageSource("sucking").setDamageBypassesArmor();
 
@@ -159,6 +158,14 @@ public class Mosquitoes {
 			}
 		}
 		return false;
+	}
+	
+	public void citronellaEffect(PlayerEntity player) {
+		for (Mosquito m : mosquitoes) {
+			m.chaseAway();
+			Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+					new AttackMosquitoMessage(m.getId(), false));
+		}
 	}
 
 	// Client method for removing a mosquito
